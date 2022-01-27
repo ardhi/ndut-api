@@ -1,0 +1,4 @@
+{
+  "maxPageSize": 100,
+  "dependency": ["ndut-db"]
+}

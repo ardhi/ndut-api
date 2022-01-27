@@ -1,0 +1,25 @@
+{
+  "name": "ndut-api",
+  "version": "0.6.0",
+  "description": "API for Ndut Framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ardhi/ndut-api.git"
+  },
+  "keywords": [
+    "ndut",
+    "api",
+    "crud",
+    "fastify"
+  ],
+  "author": "Ardhi Lukianto <ardhi@lukianto.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ardhi/ndut-api/issues"
+  },
+  "homepage": "https://github.com/ardhi/ndut-api#readme"
+}
