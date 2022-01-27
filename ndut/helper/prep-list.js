@@ -1,4 +1,4 @@
-module.exports = async function (model, params) {
+module.exports = async function (model, params = {}) {
   const { _, getNdutConfig } = this.ndut.helper
   const options = await getNdutConfig('ndut-api')
   const { schemas } = this.ndutDb

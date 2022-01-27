@@ -1,11 +1,10 @@
 const dbCall = require('./db-call')
 
-module.exports = async function (name, params, body, opts = {}) {
-  const { getNdutConfig } = this.ndut.helper
-  const oldData = await dbCall.call(this, name, 'findOne', { where: { id: params.id } })
+module.exports = async function ({ model, params, body, opts = {}, filter }) {
+  const oldData = await dbCall.call(this, { model, method: 'findOne', params })
   if (!oldData) throw this.Boom.notFound('Record not found')
-  await dbCall.call(this, name, 'update', params, body)
-  const data = await dbCall.call(this, name, 'findOne', { where: { id: params.id } })
+  await dbCall.call(this, { model, method: 'update', params, body })
+  const data = await dbCall.call(this, { model, method: 'findOne', params, filter })
   return {
     oldData,
     data,

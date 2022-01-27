@@ -1,8 +1,7 @@
 const dbCall = require('./db-call')
 
-module.exports = async function (name, params, body, opts = {}) {
-  const { getNdutConfig } = this.ndut.helper
-  const data = await dbCall.call(this, name, 'find', params)
+module.exports = async function ({ model, params, filter }) {
+  const data = await dbCall.call(this, { model, method: 'find', params, filter })
   return {
     data,
     total: params.total,
