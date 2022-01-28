@@ -1,6 +1,6 @@
 module.exports = async function (model, params = {}) {
   const { _, getNdutConfig } = this.ndut.helper
-  const options = await getNdutConfig('ndut-api')
+  const options = getNdutConfig('ndut-api')
   const { schemas } = this.ndutDb
   const { maxPageSize } = options
   if (!_.isString(model)) model = model.name
