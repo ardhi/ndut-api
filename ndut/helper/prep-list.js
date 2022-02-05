@@ -20,7 +20,7 @@ module.exports = async function (model, params = {}) {
     try {
       where = JSON.parse(params.query)
     } catch (err) {
-      throw new Error(`Can't parse datasource query`)
+      throw new this.Boom.internal('cantParseDatasourceQuery', { ndut: 'api' })
     }
   }
   let order = params.sort

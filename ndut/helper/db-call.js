@@ -31,5 +31,6 @@ module.exports = async function ({ model, method, params, body, opts, filter }) 
       }
     }
   }
+  if (result && method !== 'count') result.ndut = 'api'
   return result
 }
