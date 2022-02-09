@@ -13,7 +13,7 @@ module.exports = async function ({ model, method, params, body, opts, filter }) 
       if (_.isFunction(obj.before)) await obj.before({ model, params, body, filter })
     }
   }
-  let result = await modelInstance[_method](params, body)
+  let result = await modelInstance[_method](_method === 'count' ? (params.where || {}) : params, body)
   if (_method === 'count') return result
   if (this.ndutApi.hook[method]) {
     for (const obj of this.ndutApi.hook[method]) {
