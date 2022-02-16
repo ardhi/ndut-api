@@ -1,5 +1,5 @@
 {
-  "maxPageSize": 100,
+  "maxPageSize": 25,
   "streamBatchSize": 100,
   "dependency": ["ndut-db"]
 }
