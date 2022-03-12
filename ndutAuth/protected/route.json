@@ -1,0 +1,3 @@
+{
+  "/attachment/:model/:id/:column/:file": ["GET"]
+}

@@ -1,5 +1,6 @@
 {
   "maxPageSize": 25,
+  "prefix": "gw",
   "streamBatchSize": 100,
   "dependency": ["ndut-db"]
 }

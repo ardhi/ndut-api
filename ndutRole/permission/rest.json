@@ -1,0 +1,6 @@
+[
+  {
+    "path": "/attachment/:model/:id",
+    "method": "read"
+  }
+]
