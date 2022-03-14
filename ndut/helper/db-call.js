@@ -15,7 +15,10 @@ module.exports = async function ({ model, method, params, body, opts, filter }) 
     }
   }
   let result
-  if (_method === 'create') result = await modelInstance.create(body)
+  if (_method === 'create') {
+    // TODO: if id is a string, result.id is autonumber ???????
+    result = await modelInstance.create(body)
+  }
   else result = await modelInstance[_method](_method === 'count' ? (_params.where || {}) : _params, body)
   if (_method === 'count') return result
   if (this.ndutApi.hook[method]) {

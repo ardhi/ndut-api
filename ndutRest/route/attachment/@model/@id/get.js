@@ -13,11 +13,12 @@ module.exports = {
     const data = {}
     for (const f of files) {
       const [empty, column, file] = f.replace(dir, '').split('/')
-      if (column.endsWith('Multi')) {
-        if (!data[column]) data[column] = []
-        data[column].push(file)
-      } else data[column] = file
+      if (!data[column]) data[column] = []
+      data[column].push(file)
     }
+    _.forOwn(data, (v, k) => {
+      if (v.length === 1) data[k] = v[0]
+    })
     return data
   }
 }
