@@ -9,7 +9,7 @@ module.exports = async function ({ model, params, filter }) {
   }
   if (!params.noCount) {
     result.total = params.total
-    result.totalPage = Math.floor((params.total + params.limit - 1) / params.limit)
+    result.totalPages = Math.floor((params.total + params.limit - 1) / params.limit)
   }
   return result
 }

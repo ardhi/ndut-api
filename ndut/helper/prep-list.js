@@ -25,10 +25,14 @@ module.exports = async function (model, params = {}) {
   }
   let order = params.sort
   if (!order) {
-    const schema = _.find(schemas, { name: model }) || {}
-    const keys = _.map(schema.columnns, 'name')
-    const found = _.intersection(keys, ['updated_at', 'updatedAt', 'created_at', 'createdAt'])
-    if (found[0]) order = `${found[0]} DESC`
+    if (model === '_array_') {
+      // TODO: array order
+    } else {
+      const schema = _.find(schemas, { name: model }) || {}
+      const keys = _.map(schema.columnns, 'name')
+      const found = _.intersection(keys, ['updated_at', 'updatedAt', 'created_at', 'createdAt'])
+      if (found[0]) order = `${found[0]} DESC`
+    }
   }
   return { limit, page, skip, order, where }
 }
