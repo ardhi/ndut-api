@@ -1,4 +1,4 @@
-module.exports = async function ({ model, method, params, body, opts, filter }) {
+module.exports = async function ({ model, method, params, body, filter, columns, options = {} }) {
   const { _ } = this.ndut.helper
   const modelInstance = _.isString(model) ? this.ndutDb.model[model] : model
   const _method = method
@@ -21,10 +21,15 @@ module.exports = async function ({ model, method, params, body, opts, filter }) 
   }
   else result = await modelInstance[_method](_method === 'count' ? (_params.where || {}) : _params, body)
   if (_method === 'count') return result
+  if (!_.isEmpty(columns)) {
+    const columnsValue = _.map(columns, 'value')
+    if (_.isArray(result)) result = _.map(result, r => _.pick(r, columnsValue))
+    else result = _.pick(result, columnsValue)
+  }
   if (this.ndutApi.hook[method]) {
     for (const obj of this.ndutApi.hook[method]) {
       if (_.isFunction(obj.after)) {
-        const resp = await obj.after({ model, result, params: _params, body, opts, filter })
+        const resp = await obj.after({ model, result, params: _params, body, options, filter })
         if (resp) result = _.merge(result, resp)
       }
     }
@@ -32,7 +37,7 @@ module.exports = async function ({ model, method, params, body, opts, filter }) 
   if (this.ndutApi.hook[method + '@' + modelInstance.name]) {
     for (const obj of this.ndutApi.hook[method + '@' + modelInstance.name]) {
       if (_.isFunction(obj.after)) {
-        const resp = await obj.after({ model, result, params: _params, body, opts, filter })
+        const resp = await obj.after({ model, result, params: _params, body, options, filter })
         if (resp) result = _.merge(result, resp)
       }
     }

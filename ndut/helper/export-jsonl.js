@@ -1,6 +1,6 @@
 const dbCall = require('./db-call')
 
-const streaming = async function ({ input, model, params, filter }) {
+const streaming = async function ({ input, model, params, filter, columns, options = {} }) {
   const { _, getNdutConfig } = this.ndut.helper
   const cfg = getNdutConfig('ndut-api')
   const batchSize = cfg.batchSize || 100
@@ -10,7 +10,7 @@ const streaming = async function ({ input, model, params, filter }) {
   try {
     for (;;) {
       params.skip = (page - 1) * batchSize
-      const data = await dbCall.call(this, { model, method: 'find', params, filter })
+      const data = await dbCall.call(this, { model, method: 'find', params, filter, columns, options })
       if (data.length === 0) break
       data.forEach(input.write)
       page++
@@ -21,9 +21,9 @@ const streaming = async function ({ input, model, params, filter }) {
   }
 }
 
-module.exports = function ({ model, params, filter }) {
+module.exports = async function ({ model, params, filter, columns, options = {} }) {
   const { JSONStream } = this.ndut.helper
-  const input = JSONStream.stringify(false)
-  streaming.call(this, { input, model, params, filter })
+  const input = JSONStream.stringify(options.trueJson ? undefined : false)
+  streaming.call(this, { input, model, params, filter, columns })
   return input
 }

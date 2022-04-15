@@ -1,7 +1,7 @@
 const dbCall = require('./db-call')
 
-module.exports = async function ({ model, params, filter }) {
-  const data = await dbCall.call(this, { model, method: 'find', params, filter })
+module.exports = async function ({ model, params, filter, columns, options = {} }) {
+  const data = await dbCall.call(this, { model, method: 'find', params, filter, columns, options })
   const result = {
     data,
     pageSize: params.limit,
