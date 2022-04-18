@@ -2,5 +2,9 @@
   {
     "path": "/attachment/:model/:id/:column/:file",
     "method": "read"
+  },
+  {
+    "path": "/attachment/:model/:id/:column/:file",
+    "method": "remove"
   }
 ]
