@@ -1,4 +1,4 @@
-const dbCall = require('./db-call')
+const find = require('./find')
 
 const streaming = async function ({ input, model, params, filter, columns, options = {} }) {
   const { _, getNdutConfig } = this.ndut.helper
@@ -10,7 +10,7 @@ const streaming = async function ({ input, model, params, filter, columns, optio
   try {
     for (;;) {
       params.skip = (page - 1) * batchSize
-      const data = await dbCall.call(this, { model, method: 'find', params, filter, columns, options })
+      const { data } = await find.call(this, { model, params, filter, columns, options })
       if (data.length === 0) break
       data.forEach(input.write)
       page++

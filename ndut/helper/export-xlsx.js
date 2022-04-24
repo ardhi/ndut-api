@@ -1,4 +1,4 @@
-const dbCall = require('./db-call')
+const find = require('./find')
 const path = require('path')
 const XlsxTemplate = require('xlsx-template')
 
@@ -50,7 +50,7 @@ module.exports = async function ({ model, params, filter, columns, options = {} 
   try {
     for (;;) {
       params.skip = (page - 1) * batchSize
-      const data = await dbCall.call(this, { model, method: 'find', params, filter, columns, options })
+      const { data } = await find.call(this, { model, params, filter, columns, options })
       if (data.length === 0) break
       all = _.concat(all, data)
       page++
