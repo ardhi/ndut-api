@@ -1,4 +1,4 @@
-module.exports = async function ({ model, method, params, body, filter, columns, options = {} }) {
+module.exports = async function ({ model, method, params, body, filter, options = {} }) {
   const { _ } = this.ndut.helper
   const modelInstance = _.isString(model) ? this.ndutDb.model[model] : model
   const _method = method
@@ -15,8 +15,14 @@ module.exports = async function ({ model, method, params, body, filter, columns,
   else result = await modelInstance[_method](_method === 'count' ? (params.where || {}) : params, body)
   if (method === 'remove') console.log(params)
   if (_method === 'count') return result
+  let columns = options.columns || []
   if (_.isEmpty(columns)) columns = _.keys(modelInstance.definition.properties)
-  const columnsValue = _.isString(columns[0]) ? columns : _.map(columns, 'value')
+  let columnsValue = _.isString(columns[0]) ? columns : _.map(columns, 'value')
+  let omitted = options.omittedColumns || []
+  if (!_.isEmpty(omitted)) {
+    omitted = _.isString(omitted[0]) ? omitted : _.map(omitted, 'value')
+    columnsValue = _.without(columnsValue, ...omitted)
+  }
   if (_.isArray(result)) result = _.map(result, r => _.pick(r, columnsValue))
   else result = _.pick(result, columnsValue)
 

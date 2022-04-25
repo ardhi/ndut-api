@@ -26,7 +26,7 @@ const createTemplate = async function ({ model, columns }) {
   return dest
 }
 
-module.exports = async function ({ model, params, filter, columns, options = {} }) {
+module.exports = async function ({ model, params, filter, options = {} }) {
   const { getNdutConfig, _, fs, aneka } = this.ndut.helper
   const { pascalCase } = aneka
   const schema = _.find(this.ndutDb.schemas, { name: model })
@@ -36,8 +36,8 @@ module.exports = async function ({ model, params, filter, columns, options = {} 
   let tpl = `${opts.dir}/ndutApi/export-tpl/${base}.xlsx`
   if (!fs.existsSync(tpl)) tpl = `${optsApp.dir}/ndutApi/export-tpl/override/${pascalCase(base)}.xlsx`
   if (!fs.existsSync(tpl)) {
-    tpl = await createTemplate.call(this, { model, columns })
-    columns = null
+    tpl = await createTemplate.call(this, { model, columns: options.columns || [] })
+    options.columns = null
   }
   const data = await fs.readFile(tpl)
   const content = new XlsxTemplate(data)
@@ -50,7 +50,7 @@ module.exports = async function ({ model, params, filter, columns, options = {} 
   try {
     for (;;) {
       params.skip = (page - 1) * batchSize
-      const { data } = await find.call(this, { model, params, filter, columns, options })
+      const { data } = await find.call(this, { model, params, filter, options })
       if (data.length === 0) break
       all = _.concat(all, data)
       page++

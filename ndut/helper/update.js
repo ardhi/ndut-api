@@ -9,7 +9,7 @@ module.exports = async function ({ model, params, body, filter, options = {} }) 
   const oldData = await dbCall.call(this, { model, method: 'findOne', params: { where: params }, filter, options })
   if (!oldData) throw this.Boom.notFound('recordNotFound', { ndut: 'api' })
   await callBeforeHook.call(this, { method, model, params, body, options, filter })
-  await dbCall.call(this, { model, method, params, filter, body })
+  await dbCall.call(this, { model, method, params, filter, body, options })
   let data = await dbCall.call(this, { model, method: 'findOne', params: { where: params }, filter, options })
   data = await callAfterHook.call(this, { method, model, result: data, params, body, options, filter })
   if (options.reqId) {

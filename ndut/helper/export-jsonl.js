@@ -1,6 +1,6 @@
 const find = require('./find')
 
-const streaming = async function ({ input, model, params, filter, columns, options = {} }) {
+const streaming = async function ({ input, model, params, filter, options = {} }) {
   const { _, getNdutConfig } = this.ndut.helper
   const cfg = getNdutConfig('ndut-api')
   const batchSize = cfg.batchSize || 100
@@ -10,7 +10,7 @@ const streaming = async function ({ input, model, params, filter, columns, optio
   try {
     for (;;) {
       params.skip = (page - 1) * batchSize
-      const { data } = await find.call(this, { model, params, filter, columns, options })
+      const { data } = await find.call(this, { model, params, filter, options })
       if (data.length === 0) break
       data.forEach(input.write)
       page++
@@ -21,9 +21,9 @@ const streaming = async function ({ input, model, params, filter, columns, optio
   }
 }
 
-module.exports = async function ({ model, params, filter, columns, options = {} }) {
+module.exports = async function ({ model, params, filter, options = {} }) {
   const { JSONStream } = this.ndut.helper
   const input = JSONStream.stringify(options.trueJson ? undefined : false)
-  streaming.call(this, { input, model, params, filter, columns })
+  streaming.call(this, { input, model, params, filter })
   return input
 }
