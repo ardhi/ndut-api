@@ -13,7 +13,6 @@ module.exports = async function ({ model, method, params, body, filter, options 
     }
   }
   else result = await modelInstance[_method](_method === 'count' ? (params.where || {}) : params, body)
-  if (method === 'remove') console.log(params)
   if (_method === 'count') return result
   let columns = options.columns || []
   if (_.isEmpty(columns)) columns = _.keys(modelInstance.definition.properties)
