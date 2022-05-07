@@ -24,7 +24,5 @@ module.exports = async function ({ model, method, params, body, filter, options 
   }
   if (_.isArray(result)) result = _.map(result, r => _.pick(r, columnsValue))
   else result = _.pick(result, columnsValue)
-
-  if (result && method !== 'count') result.ndut = 'api'
   return result
 }
