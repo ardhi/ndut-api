@@ -9,7 +9,12 @@ module.exports = async function ({ model, method, params, body, filter, options 
     result = _.cloneDeep(await modelInstance.create(body))
     const idType = modelInstance.definition.properties.id.type
     if (typeof idType === 'function' && idType.name === 'String') {
-      if (!_.isEmpty(body.id)) result.id = body.id
+      if (_.isEmpty(body.id)) {
+        let cOpts = _.get(modelInstance, 'settings.feature.stringId')
+        if (cOpts === true) cOpts = {}
+        body.id = this.ndutDb.helper.generateId(cOpts)
+      }
+      result.id = body.id
     }
   }
   else result = await modelInstance[_method](_method === 'count' ? (params.where || {}) : params, body)

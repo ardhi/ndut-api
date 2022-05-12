@@ -7,8 +7,11 @@ module.exports = async function ({ model, params, filter, options = {} }) {
   const method = 'findOne'
   await callBeforeHook.call(this, { method, model, params, options, filter })
   let data = await dbCall.call(this, { model, method, params, filter, options })
-  const mustThrow = !options.noThrow
-  if (_.isEmpty(data) && mustThrow) throw this.Boom.notFound('recordNotFound', { ndut: 'api' })
+  if (_.isEmpty(data)) {
+    const mustThrow = !options.noThrow
+    if (mustThrow) throw this.Boom.notFound('recordNotFound', { ndut: 'api' })
+    return { data }
+  }
   data = await callAfterHook.call(this, { method, model, result: data, params, options, filter })
   return {
     data
