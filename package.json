@@ -1,6 +1,6 @@
 {
   "name": "ndut-api",
-  "version": "0.6.22",
+  "version": "0.7.0",
   "description": "API for Ndut Framework",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,5 @@
     "url": "https://github.com/ardhi/ndut-api/issues"
   },
   "homepage": "https://github.com/ardhi/ndut-api#readme",
-  "dependencies": {
-    "xlsx-template": "^1.3.2"
-  }
+  "dependencies": {}
 }

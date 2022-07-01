@@ -8,11 +8,11 @@ module.exports = async function ({ model, params, body, filter, options = {} }) 
   const method = 'update'
   const oldData = await dbCall.call(this, { model, method: 'findOne', params: { where: params }, filter, options })
   if (!oldData) throw this.Boom.notFound('recordNotFound', { ndut: 'api' })
-  await callBeforeHook.call(this, { method, model, params, body, options, filter })
+  if (!options.noBeforeHook) await callBeforeHook.call(this, { method, model, result: oldData, params, body, options, filter })
   await dbCall.call(this, { model, method, params, filter, body, options })
   let data = await dbCall.call(this, { model, method: 'findOne', params: { where: params }, filter, options })
-  data = await callAfterHook.call(this, { method, model, result: data, params, body, options, filter })
-  if (options.reqId) {
+  if (!options.noAftereHook) data = await callAfterHook.call(this, { method, model, result: data, oldResult: oldData, params, body, options, filter })
+  if (!options.noUpload && options.reqId) {
     const modelName = _.isString(model) ? model : model.name
     await uploadedAsAttachment.call(this, modelName, data.id, options.reqId)
   }

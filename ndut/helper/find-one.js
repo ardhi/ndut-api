@@ -5,14 +5,14 @@ const callAfterHook = require('../../lib/call-after-hook')
 module.exports = async function ({ model, params, filter, options = {} }) {
   const { _ } = this.ndut.helper
   const method = 'findOne'
-  await callBeforeHook.call(this, { method, model, params, options, filter })
+  if (!options.noBeforeHook) await callBeforeHook.call(this, { method, model, params, options, filter })
   let data = await dbCall.call(this, { model, method, params, filter, options })
   if (_.isEmpty(data)) {
     const mustThrow = !options.noThrow
     if (mustThrow) throw this.Boom.notFound('recordNotFound', { ndut: 'api' })
     return { data }
   }
-  data = await callAfterHook.call(this, { method, model, result: data, params, options, filter })
+  if (!options.noAfterHook) data = await callAfterHook.call(this, { method, model, result: data, params, options, filter })
   return {
     data
   }

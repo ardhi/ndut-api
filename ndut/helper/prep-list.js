@@ -24,15 +24,23 @@ module.exports = async function (model, params = {}) {
     }
   }
   let order = params.sort
-  if (!order) {
+  if (!params.sort) {
     if (model === '_array_') {
       // TODO: array order
     } else {
       const schema = _.find(schemas, { name: model }) || {}
-      const keys = _.map(schema.columnns, 'name')
-      const found = _.intersection(keys, ['updated_at', 'updatedAt', 'created_at', 'createdAt'])
+      const keys = _.keys(schema.properties)
+      const found = _.intersection(['updated_at', 'updatedAt', 'created_at', 'createdAt'], keys)
       if (found[0]) order = `${found[0]} DESC`
     }
+  } else if (_.isString(order)) {
+    order = _.map(order.split(','), item => {
+      const parts = _.map(_.trim(item).split(':'), i => _.trim(i))
+      if (!parts[1]) parts[1] = 'ASC'
+      parts[1] = parts[1].toUpperCase()
+      if (!['ASC', 'DESC'].includes(parts[1])) parts[1] = 'ASC'
+      return parts.join(' ')
+    })
   }
   return { limit, page, skip, order, where }
 }
