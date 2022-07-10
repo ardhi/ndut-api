@@ -1,5 +1,6 @@
 {
-  "maxPageSize": 25,
+  "maxPageSize": 100,
+  "defPageSize": 25,
   "prefix": "gate",
   "streamBatchSize": 100,
   "dependency": ["ndut-db"]

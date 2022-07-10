@@ -2,9 +2,9 @@ module.exports = async function (model, params = {}) {
   const { _, getNdutConfig } = this.ndut.helper
   const options = getNdutConfig('ndut-api')
   const { schemas } = this.ndutDb
-  const { maxPageSize } = options
+  const { maxPageSize, defPageSize } = options
   if (!_.isString(model)) model = model.name
-  let limit = parseInt(params.pageSize) || maxPageSize
+  let limit = parseInt(params.pageSize) || defPageSize
   if (limit > maxPageSize) limit = maxPageSize
   if (limit < 1) limit = 1
   let page = parseInt(params.page) || 1
