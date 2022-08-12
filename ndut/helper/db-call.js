@@ -7,18 +7,15 @@ module.exports = async function ({ model, method, params = {}, body = {}, filter
   let result
   if (_method === 'create') {
     // HACK: if id is a string, result.id is autonumber (at least on SQLITE), so force it to use supplied id
-    result = _.cloneDeep(await modelInstance.create(body, _filter))
-    const idType = modelInstance.definition.properties.id.type
-    if (typeof idType === 'function' && idType.name === 'String') {
-      /*
-      if (_.isEmpty(body.id)) {
-        let cOpts = _.get(modelInstance, 'settings.feature.stringId')
-        if (cOpts === true) cOpts = {}
-        body.id = this.ndutDb.helper.generateId(cOpts)
-      }
-      */
-      result.id = body.id
+    const idType = _.get(modelInstance, 'definition.properties.id.type')
+    const isStringId = typeof idType === 'function' && idType.name === 'String'
+    if (isStringId && _.isEmpty(body.id)) {
+      let cOpts = _.get(modelInstance, 'settings.feature.stringId')
+      if (cOpts === true) cOpts = {}
+      body.id = this.ndutDb.helper.generateId(cOpts)
     }
+    result = _.cloneDeep(await modelInstance.create(body, _filter))
+    if (isStringId) result.id = body.id
   } else if (_method === 'update') {
     result = await modelInstance[_method](params, body, _filter)
   } else result = await modelInstance[_method](_method === 'count' ? (params.where || {}) : params, _filter)
