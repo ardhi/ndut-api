@@ -3,5 +3,6 @@
   "defPageSize": 25,
   "prefix": "gate",
   "streamBatchSize": 100,
+  "slashReplacer": "~",
   "dependency": ["ndut-db"]
 }
