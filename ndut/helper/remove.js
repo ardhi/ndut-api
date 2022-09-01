@@ -7,10 +7,12 @@ module.exports = async function ({ model, params, filter, options = {} }) {
   const config = getConfig()
   const cfg = getNdutConfig('ndutApi')
   const method = 'remove'
-  let oldData = await dbCall.call(this, { model, method: 'findOne', params: { where: params }, options })
+  if (options.simpleFetch) options.noBeforeHook = true
+  let oldData = await dbCall.call(this, { model, method: 'findOne', params: { where: params }, options: { simpleFetch: true } })
   if (!oldData) throw this.Boom.notFound('recordNotFound', { ndut: 'api' })
   if (!options.noBeforeHook) await callBeforeHook.call(this, { method, model, result: oldData, params, options, filter })
   await dbCall.call(this, { model, method, params, filter, options })
+  if (options.simpleFetch) return oldData
   if (!options.noAfterHook) oldData = await callAfterHook.call(this, { method, model, result: oldData, params, options, filter })
   if (options.reqId) {
     const modelName = _.isString(model) ? model : model.name
