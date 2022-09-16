@@ -30,7 +30,7 @@ module.exports = async function (model, params = {}) {
     } else {
       const schema = _.find(schemas, { name: model }) || {}
       const keys = _.keys(schema.properties)
-      const found = _.intersection(['updated_at', 'updatedAt', 'created_at', 'createdAt'], keys)
+      const found = _.intersection(['ts', 'updated_at', 'updatedAt', 'created_at', 'createdAt'], keys)
       if (found[0]) order = `${found[0]} DESC`
     }
   } else if (_.isString(order)) {

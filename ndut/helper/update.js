@@ -1,5 +1,4 @@
 const dbCall = require('./db-call')
-const uploadedAsAttachment = require('../../lib/uploaded-as-attachment')
 const callBeforeHook = require('../../lib/call-before-hook')
 const callAfterHook = require('../../lib/call-after-hook')
 
@@ -14,13 +13,16 @@ module.exports = async function ({ model, params, body, filter, options = {} }) 
   let data = await dbCall.call(this, { model, method: 'findOne', params: { where: params }, filter, options })
   if (options.simpleFetch) return data
   if (!options.noAftereHook) data = await callAfterHook.call(this, { method, model, result: data, oldResult: oldData, params, body, options, filter })
+  let uploadInfo = []
   if (!options.noUpload && options.reqId) {
     const modelName = _.isString(model) ? model : model.name
-    await uploadedAsAttachment.call(this, modelName, data.id, options.reqId)
+    uploadInfo = await this.ndutApi.helper.uploadedAsAttachment(modelName, data.id, options.reqId)
   }
-  return {
+  const result = {
     oldData,
     data,
     message: options.message || 'recordUpdated'
   }
+  if (options.uploadInfo) result.upload = uploadInfo
+  return result
 }

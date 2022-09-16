@@ -7,16 +7,19 @@ module.exports = async function (model, modelId, reqId) {
   modelId = modelId.replace(/\//g, cfg.slashReplacer)
   const source = `${config.dir.upload}/${reqId}/*`
   const files = await fastGlob(source)
-  if (files.length === 0) return
+  const result = []
+  if (files.length === 0) return result
   for (const f of files) {
     const [col, ...parts] = path.basename(f).split('-')
     if (parts.length === 0) continue
     let dir = `${config.dir.data}/attachment/${model}/${modelId}/${col}`
-    console.log(f, dir)
     if (col.endsWith('[]')) dir = `${config.dir.data}/attachment/${model}/${modelId}/${col.replace('[]', '')}`
     else await fs.remove(dir)
     await fs.ensureDir(dir)
-    const dest = `${dir}/${parts.join('-')}`
+    const file = parts.join('-')
+    const dest = `${dir}/${file}`
     await fs.copy(f, dest)
+    result.push({ dir, file })
   }
+  return result
 }
