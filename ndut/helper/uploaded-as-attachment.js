@@ -1,6 +1,6 @@
 const path = require('path')
 
-module.exports = async function (model, modelId, reqId) {
+module.exports = async function (model, modelId = '', reqId) {
   const { fs, getConfig, fastGlob, getNdutConfig } = this.ndut.helper
   const config = getConfig()
   const cfg = getNdutConfig('ndutApi')

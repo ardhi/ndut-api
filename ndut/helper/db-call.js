@@ -17,7 +17,11 @@ module.exports = async function ({ model, method, params = {}, body = {}, filter
     result = _.cloneDeep(await modelInstance.create(body, _filter))
     if (isStringId) result.id = body.id
   } else if (_method === 'update') {
+    delete body.__id
+    const forceId = modelInstance.settings.forceId
+    modelInstance.settings.forceId = false
     result = await modelInstance[_method](params, body, _filter)
+    modelInstance.settings.forceId = forceId
   } else result = await modelInstance[_method](_method === 'count' ? (params.where || {}) : params, _filter)
   if (_method === 'count') return result
   let columns = options.columns || []

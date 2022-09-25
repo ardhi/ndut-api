@@ -10,6 +10,10 @@ module.exports = async function ({ model, params, body, filter, options = {} }) 
   if (!oldData) throw this.Boom.notFound('recordNotFound', { ndut: 'api' })
   if (!options.noBeforeHook) await callBeforeHook.call(this, { method, model, result: oldData, params, body, options, filter })
   await dbCall.call(this, { model, method, params, filter, body, options })
+  if (body.__id) {
+    params.id = body.__id
+    // TODO: rename attachment root
+  }
   let data = await dbCall.call(this, { model, method: 'findOne', params: { where: params }, filter, options })
   if (options.simpleFetch) return data
   if (!options.noAftereHook) data = await callAfterHook.call(this, { method, model, result: data, oldResult: oldData, params, body, options, filter })
