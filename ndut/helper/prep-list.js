@@ -42,5 +42,5 @@ module.exports = async function (model, params = {}) {
       return parts.join(' ')
     })
   }
-  return { limit, page, skip, order, where }
+  return { limit, page, skip, order, where, distinct: params.distinct || '' }
 }
