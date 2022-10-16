@@ -32,6 +32,7 @@ module.exports = async function (model, params = {}) {
       const keys = _.keys(schema.properties)
       const found = _.intersection(['ts', 'updated_at', 'updatedAt', 'created_at', 'createdAt'], keys)
       if (found[0]) order = `${found[0]} DESC`
+      else order = 'id ASC'
     }
   } else if (_.isString(order)) {
     order = _.map(order.split(','), item => {
@@ -42,5 +43,14 @@ module.exports = async function (model, params = {}) {
       return parts.join(' ')
     })
   }
-  return { limit, page, skip, order, where, distinct: params.distinct || '' }
+  let having
+  if (params.agg && params.having) {
+    try {
+      having = JSON.parse(params.having)
+    } catch (err) {
+      throw new this.Boom.internal('cantParseDatasourceHaving', { ndut: 'api' })
+    }
+  }
+  return { limit, page, skip, order, where, distinct: params.distinct || '',
+    agg: params.agg || '', fn: params.fn, having }
 }

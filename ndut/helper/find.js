@@ -4,13 +4,17 @@ const callAfterHook = require('../../lib/call-after-hook')
 
 module.exports = async function ({ model, params = {}, filter = {}, options = {} }) {
   const { _ } = this.ndut.helper
+  if (!_.isEmpty(params.distinct)) {
+    const result = await this.ndutApi.helper.extFindDistinct({ model, params, options, filter })
+    return result
+  }
+  if (!_.isEmpty(params.agg)) {
+    const result = await this.ndutApi.helper.extFindAggregate({ model, params, options, filter })
+    return result
+  }
   const method = 'find'
   if (options.simpleFetch) options.noBeforeHook = true
   if (!options.noBeforeHook) await callBeforeHook.call(this, { method, model, params, options, filter })
-  if (!_.isEmpty(params.distinct)) {
-    const result = await this.ndutApi.helper.extFindDistinct({ method, model, params, options, filter })
-    return result
-  }
   if (!params.noCount) params.total = await dbCall.call(this, { model, method: 'count', params, filter })
   let data = await dbCall.call(this, { model, method, params, filter, options })
   if (options.simpleFetch) return data

@@ -9,9 +9,12 @@ module.exports = async function ({ model, params = {}, filter = {}, options = {}
   if (!options.noBeforeHook) await callBeforeHook.call(this, { method, model, params, options, filter })
   const modelInstance = _.isString(model) ? this.ndutDb.model[model] : model
   const columns = modelInstance.definition.properties
-  const distinctCols = _.map(params.distinct.split(','), c => _.trim(c))
+  const cols = _.map(params.distinct.split(','), c => _.trim(c))
+  _.forOwn(cols, c => {
+    if (!_.keys(columns).includes(c)) throw this.Boom.badData('invalidDisinctColumn', { ndut: 'ndutApi' })
+  })
   const con = modelInstance.getConnector()
-  const cols = _.map(_.intersection(_.keys(columns), distinctCols), c => con.escapeName(c))
+  if (cols.length === 0) throw this.Boom.badData('invalidDisinctColumn', { ndut: 'ndutApi' })
   const select = con.buildSelect(model, params)
   const parts = select.sql.split(' FROM ')
   const distinct = `DISTINCT ${cols.join(', ')}`
