@@ -11,7 +11,7 @@ module.exports = async function ({ model, params = {}, filter = {}, options = {}
   const columns = modelInstance.definition.properties
   const cols = _.map(params.agg.split(','), c => _.trim(c))
   _.forOwn(cols, c => {
-    if (!_.keys(columns).includes(c)) throw this.Boom.badData('invalidDisinctColumn', { ndut: 'ndutApi' })
+    if (!_.keys(columns).includes(c)) throw this.Boom.badData('invalidAggColumn', { ndut: 'api' })
   })
   const con = modelInstance.getConnector()
   let agg = ['count', '*']
@@ -20,7 +20,7 @@ module.exports = async function ({ model, params = {}, filter = {}, options = {}
   const select = con.buildSelect(model, params)
   const parts = select.sql.split(' FROM ')
   const groupby1 = `${cols.join(', ')}`
-  parts[0] = `SELECT ${groupby1}, ${agg[0]}(${agg[1]}) as aggregate`
+  parts[0] = `SELECT ${groupby1}, ${agg[0]}(${agg[1]}) as agg`
   const parts1 = parts[1].split(' ORDER BY ')
   parts1[0] += ` GROUP BY ${cols.join(', ')} ` // TODO: add 'having'
   if (params.having) {
@@ -30,7 +30,6 @@ module.exports = async function ({ model, params = {}, filter = {}, options = {}
   }
   parts[1] = parts1.join(' ORDER BY ')
   const stmt = parts.join(' FROM ').split(' LIMIT ')[0]
-  console.log(stmt, select.params)
   let data = await this.ndutApi.helper.extNativeSql({ stmt, stmtParams: select.params, model })
   data = Object.values(JSON.parse(JSON.stringify(data)))
   // ALWAYS noCount here
