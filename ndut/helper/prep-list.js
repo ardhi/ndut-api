@@ -1,4 +1,5 @@
-module.exports = async function (model, params = {}) {
+module.exports = function (params = {}, model = '') {
+  // TODO: params needs to be cleaned up! Replaced keys should be dropped from params
   const { _, getNdutConfig } = this.ndut.helper
   const options = getNdutConfig('ndut-api')
   const { schemas } = this.ndutDb
@@ -31,8 +32,8 @@ module.exports = async function (model, params = {}) {
       const schema = _.find(schemas, { name: model }) || {}
       const keys = _.keys(schema.properties)
       const found = _.intersection(['ts', 'updated_at', 'updatedAt', 'created_at', 'createdAt'], keys)
-      if (found[0]) order = `${found[0]} DESC`
-      else order = 'id ASC'
+      if (found[0]) order = [`${found[0]} DESC`]
+      else order = ['id ASC']
     }
   } else if (_.isString(order)) {
     order = _.map(order.split(','), item => {
