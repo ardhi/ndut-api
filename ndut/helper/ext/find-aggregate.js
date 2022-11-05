@@ -1,6 +1,7 @@
 // const dbCall = require('./db-call')
 const callBeforeHook = require('../../../lib/call-before-hook')
 const callAfterHook = require('../../../lib/call-after-hook')
+const normalizeColumns = require('../../../lib/normalize-columns')
 
 module.exports = async function ({ model, params = {}, filter = {}, options = {} }) {
   const { _, aneka } = this.ndut.helper
@@ -32,6 +33,7 @@ module.exports = async function ({ model, params = {}, filter = {}, options = {}
   const stmt = parts.join(' FROM ').split(' LIMIT ')[0]
   let data = await this.ndutApi.helper.extNativeSql({ stmt, stmtParams: select.params, model })
   data = Object.values(JSON.parse(JSON.stringify(data)))
+  data = normalizeColumns.call(this, data, columns)
   // ALWAYS noCount here
   if (options.simpleFetch) return data
   if (!options.noAfterHook) data = await callAfterHook.call(this, { method, model, result: data, params, options, filter })
