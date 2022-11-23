@@ -1,0 +1,34 @@
+{
+  "properties": {
+    "model": {
+      "type": "String",
+      "length": 50,
+      "index": true
+    },
+    "refId": {
+      "type": "String",
+      "length": 50,
+      "index": true
+    },
+    "column": {
+      "type": "String",
+      "length": 50,
+      "index": true
+    },
+    "file": {
+      "type": "String",
+      "length": 255,
+      "index": true
+    },
+    "type": {
+      "type": "String",
+      "length": 20,
+      "index": true
+    },
+    "size": {
+      "type": "Number",
+      "index": true
+    }
+  },
+  "feature": ["createdAt", "ndutAuthCreatedBy"]
+}
