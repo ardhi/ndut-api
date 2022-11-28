@@ -1,4 +1,4 @@
-module.exports = function (params = {}, model = '') {
+module.exports = function (params = {}, model = '_array_', noParseQuery) {
   // TODO: params needs to be cleaned up! Replaced keys should be dropped from params
   const { _, getNdutConfig } = this.ndut.helper
   const options = getNdutConfig('ndut-api')
@@ -17,7 +17,7 @@ module.exports = function (params = {}, model = '') {
   }
   if (skip < 0) skip = 0
   let where = {}
-  if (params.query) {
+  if (params.query && !noParseQuery) {
     try {
       where = JSON.parse(params.query)
     } catch (err) {
@@ -53,5 +53,5 @@ module.exports = function (params = {}, model = '') {
     }
   }
   return { limit, page, skip, order, where, distinct: params.distinct || '',
-    agg: params.agg || '', fn: params.fn, having }
+    agg: params.agg || '', fn: params.fn, having, rawQuery: params.query }
 }
