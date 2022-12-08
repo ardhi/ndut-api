@@ -11,8 +11,10 @@ module.exports = async function ({ model, id }) {
     if (!data[column]) data[column] = []
     data[column].push(file)
   }
+  /*
   _.forOwn(data, (v, k) => {
     if (v.length === 1) data[k] = v[0]
   })
+  */
   return { data }
 }
