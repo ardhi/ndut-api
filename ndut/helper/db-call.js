@@ -9,6 +9,18 @@ module.exports = async function ({ model, method, params = {}, body = {}, filter
     // HACK: if id is a string, result.id is autonumber (at least on SQLITE), so force it to use supplied id
     const idType = _.get(modelInstance, 'definition.properties.id.type')
     const isStringId = typeof idType === 'function' && idType.name === 'String'
+    let uniqueIdx = {}
+    _.forOwn(modelInstance.settings.indexes, (v, k) => {
+      if (_.get(v, 'options.unique')) {
+        _.forOwn(v.keys, (v1, k1) => {
+          if (v1 === 1 && !_.isEmpty(body[k1])) uniqueIdx[k1] = body[k1]
+        })
+      }
+    })
+    if (!_.isEmpty(uniqueIdx)) {
+      const resp = await modelInstance.find({ where: uniqueIdx, limit: 1 })
+      if (resp.length > 0) throw this.Boom.badData('recordExists', { ndut: 'api' })
+    }
     if (isStringId && _.isEmpty(body.id)) {
       let cOpts = _.get(modelInstance, 'settings.feature.stringId')
       if (cOpts === true) cOpts = {}

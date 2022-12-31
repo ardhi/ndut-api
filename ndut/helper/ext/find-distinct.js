@@ -17,7 +17,7 @@ module.exports = async function ({ model, params = {}, filter = {}, options = {}
   if (cols.length === 0) throw this.Boom.badData('invalidDisinctColumn', { ndut: 'ndutApi' })
   const select = con.buildSelect(model, params)
   const parts = select.sql.split(' FROM ')
-  const distinct = `DISTINCT ${cols.join(', ')}`
+  const distinct = `DISTINCT "${cols.join('", "')}"`
   parts[0] = `SELECT ${distinct}`
   let data = await this.ndutApi.helper.extNativeSql({ stmt: parts.join(' FROM '), stmtParams: select.params, model })
   data = data.map(function(obj) {

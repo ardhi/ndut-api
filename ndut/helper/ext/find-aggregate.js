@@ -20,7 +20,7 @@ module.exports = async function ({ model, params = {}, filter = {}, options = {}
   if (!agg[1]) agg[1] = '*'
   const select = con.buildSelect(model, params)
   const parts = select.sql.split(' FROM ')
-  const groupby1 = `${cols.join(', ')}`
+  const groupby1 = `"${cols.join('", "')}"`
   parts[0] = `SELECT ${groupby1}, ${agg[0]}(${agg[1]}) as agg`
   const parts1 = parts[1].split(' ORDER BY ')
   parts1[0] += ` GROUP BY ${cols.join(', ')} ` // TODO: add 'having'
