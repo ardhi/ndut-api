@@ -2,7 +2,6 @@ module.exports = function (params = {}, model = '_array_', noParseQuery) {
   // TODO: params needs to be cleaned up! Replaced keys should be dropped from params
   const { _, getNdutConfig } = this.ndut.helper
   const options = getNdutConfig('ndut-api')
-  const { schemas } = this.ndutDb
   const { maxPageSize, defPageSize } = options
   if (!_.isString(model)) model = model.name
   let limit = parseInt(params.pageSize) || defPageSize
@@ -29,6 +28,7 @@ module.exports = function (params = {}, model = '_array_', noParseQuery) {
     if (model === '_array_') {
       // TODO: array order
     } else {
+      const { schemas } = this.ndutDb
       const schema = _.find(schemas, { name: model }) || {}
       const keys = _.keys(schema.properties)
       const found = _.intersection(['ts', 'updated_at', 'updatedAt', 'created_at', 'createdAt'], keys)

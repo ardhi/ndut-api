@@ -5,5 +5,5 @@
   "streamBatchSize": 100,
   "slashReplacer": "~",
   "logDownload": true,
-  "dependency": ["ndut-db"]
+  "dependency": []
 }
