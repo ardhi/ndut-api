@@ -1,5 +1,7 @@
-module.exports = async function ({ model, method, params = {}, body = {}, filter = {}, options = {} }) {
+module.exports = async function (args = {}) {
   const { _ } = this.ndut.helper
+  if (_.isString(args)) args = { model: args }
+  let { model, method = 'find', params = {}, body = {}, filter = {}, options = {} } = args
   const modelInstance = _.isString(model) ? this.ndutDb.model[model] : model
   const _method = method
   method = method === 'count' ? 'find' : method
@@ -13,7 +15,7 @@ module.exports = async function ({ model, method, params = {}, body = {}, filter
     _.forOwn(modelInstance.settings.indexes, (v, k) => {
       if (_.get(v, 'options.unique')) {
         _.forOwn(v.keys, (v1, k1) => {
-          if (v1 === 1 && !_.isEmpty(body[k1])) uniqueIdx[k1] = body[k1]
+          if (v1 === 1) uniqueIdx[k1] = body[k1]
         })
       }
     })
