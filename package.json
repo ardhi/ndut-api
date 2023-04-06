@@ -1,6 +1,6 @@
 {
   "name": "ndut-api",
-  "version": "0.7.27",
+  "version": "0.7.28",
   "description": "API for Ndut Framework",
   "main": "index.js",
   "scripts": {

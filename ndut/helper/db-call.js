@@ -47,6 +47,6 @@ module.exports = async function (args = {}) {
     columnsValue = _.without(columnsValue, ...omitted)
   }
   if (_.isArray(result)) result = _.map(result, r => _.pick(r, columnsValue))
-  else result = _.pick(result, columnsValue)
+  else result = result ? _.pick(result, columnsValue) : null
   return result
 }
